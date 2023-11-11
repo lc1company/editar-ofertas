@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edição de Produtos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Edição de Produtos</h2>
+
+    <form id="productForm">
+        <label for="marketName">Nome do Supermercado:</label>
+        <input type="text" id="marketName" name="marketName" required>
+
+        <label for="productName">Nome do Produto:</label>
+        <input type="text" id="productName" name="productName" required>
+
+        <label for="productPrice">Preço do Produto:</label>
+        <input type="number" id="productPrice" name="productPrice" required>
+
+        <label for="unit">Unidade:</label>
+        <select id="unit" name="unit">
+            <option value="kg">Quilograma (kg)</option>
+            <option value="g">Grama (g)</option>
+            <option value="un">Unidade</option>
+        </select>
+
+        <button type="button" onclick="submitForm()">Enviar</button>
+    </form>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+
+    <script>
+        // Configure o Firebase com suas credenciais
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4ZJI3lGaCP93t6Teh0JVREcERPHhiBQ",
+            authDomain: "edicao-tabloide.firebaseapp.com",
+            projectId: "edicao-tabloide",
+            storageBucket: "edicao-tabloide.appspot.com",
+            messagingSenderId: "165170446353",
+            appId: "1:165170446353:web:653643a9113470634971b0",
+            measurementId: "G-WBC4ZCJQRR"
+        };
+
+        // Inicialize o Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Obtenha uma referência ao Firestore
+        const db = firebase.firestore();
+
+        // Função para enviar o formulário
+        function submitForm() {
+            const marketName = document.getElementById('marketName').value;
+            const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
+            const unit = document.getElementById('unit').value;
+
+            try {
+                // Crie uma referência ao documento no Firestore e defina os dados
+                db.collection('supermercados').doc(marketName).collection('produtos').doc(productName).set({
+                    nome: productName,
+                    preco: productPrice,
+                    unidade: unit,
+                })
+                .then(() => {
+                    alert('Produto adicionado com sucesso! em até 2horas o produto será atualizado!');
+                })
+                .catch((error) => {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao adicionar o produto.');
+                });
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao adicionar o produto.');
+            }
+        }
+    </script>
+
+</body>
+</html>
